@@ -1,0 +1,32 @@
+name: 'Lagoon CLI Action'
+description: 'Run lagoon-cli commands with SSH authentication.'
+author: 'amazee.io'
+branding:
+  icon: 'play'
+  color: 'blue'
+
+inputs:
+  ssh-private-key:
+    description: 'SSH private key for Lagoon authentication'
+    required: true
+    default: ${{ secrets.LAGOON_SSH_PRIVATE_KEY }}
+  lagoon-graphql-endpoint:
+    description: 'Lagoon GraphQL endpoint'
+    required: false
+    default: https://api.lagoon.amazeeio.cloud/graphql
+  lagoon-ssh-hostname:
+    description: 'Lagoon SSH hostname'
+    required: false
+    default: ssh.lagoon.amazeeio.cloud
+  lagoon-port:
+    description: 'Lagoon SSH port'
+    required: false
+    default: 32222
+  lagoon-command:
+    description: 'Lagoon CLI command to run'
+    required: true
+    default: 'whoami'
+  
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
