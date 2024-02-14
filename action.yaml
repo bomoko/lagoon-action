@@ -9,19 +9,19 @@ inputs:
   ssh_private_key:
     description: 'SSH private key for Lagoon authentication'
     required: true
-  lagoon-graphql-endpoint:
+  lagoon_graphql_endpoint:
     description: 'Lagoon GraphQL endpoint'
     required: false
     default: https://api.lagoon.amazeeio.cloud/graphql
-  lagoon-ssh-hostname:
+  lagoon_ssh_hostname:
     description: 'Lagoon SSH hostname'
     required: false
     default: ssh.lagoon.amazeeio.cloud
-  lagoon-port:
+  lagoon_port:
     description: 'Lagoon SSH port'
     required: false
     default: 32222
-  lagoon-command:
+  lagoon_command:
     description: 'Lagoon CLI command to run'
     required: true
     default: 'whoami'
