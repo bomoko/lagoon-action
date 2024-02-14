@@ -20,8 +20,5 @@ cp /root/.lagoon.yml ~/.lagoon.yml
 # envplate the .lagoon.yaml file
 ep ~/.lagoon.yml
 
-echo "hey"
-
-# env | sort >> $GITHUB_OUTPUT
-
-/lagoon -l lagoon $INPUT_LAGOON_COMMAND
+ls -la ~/.ssh/
+# /lagoon -l lagoon $INPUT_LAGOON_COMMAND
