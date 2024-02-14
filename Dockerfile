@@ -15,7 +15,7 @@ RUN chmod +x /entry.sh
 COPY lagoon.yml /root/.lagoon.yml
 
 # Set up environment variable for the SSH key
-ENV INPUT_SSH_PRIVATE_KEY ""
+ENV INPUT_SSH-PRIVATE-KEY ""
 ENV INPUT_LAGOON_GRAPHQL_ENDPOINT "https://api.lagoon.amazeeio.cloud/graphql"
 ENV INPUT_LAGOON_SSH_HOSTNAME "ssh.lagoon.amazeeio.cloud"
 ENV INPUT_LAGOON_PORT "32222"
