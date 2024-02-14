@@ -12,7 +12,7 @@ COPY entry.sh /entry.sh
 RUN chmod +x /entry.sh
 
 # copy across the lagoon.yaml file
-COPY lagoon.yml /root/.lagoon.yml
+COPY lagoon.yml ~/.lagoon.yml
 
 # Set up environment variable for the SSH key
 ENV SSH_PRIVATE_KEY ""
