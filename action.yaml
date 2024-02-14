@@ -6,7 +6,7 @@ branding:
   color: 'blue'
 
 inputs:
-  ssh-private-key:
+  ssh_private_key:
     description: 'SSH private key for Lagoon authentication'
     required: true
   lagoon-graphql-endpoint:
