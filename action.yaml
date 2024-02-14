@@ -9,7 +9,6 @@ inputs:
   ssh-private-key:
     description: 'SSH private key for Lagoon authentication'
     required: true
-    default: ${{ secrets.LAGOON_SSH_PRIVATE_KEY }}
   lagoon-graphql-endpoint:
     description: 'Lagoon GraphQL endpoint'
     required: false
