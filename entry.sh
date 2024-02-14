@@ -20,6 +20,4 @@ cp /root/.lagoon.yml ~/.lagoon.yml
 # envplate the .lagoon.yaml file
 ep ~/.lagoon.yml
 
-# ls -la ~/.ssh/
-head -c 100 ~/.ssh/id_rsa
-/lagoon -l lagoon -i ~/.ssh/id_rsa $INPUT_LAGOON_COMMAND
+/lagoon -l lagoon --force -i ~/.ssh/id_rsa $INPUT_LAGOON_COMMAND
