@@ -24,4 +24,4 @@ echo "hey"
 
 # env | sort >> $GITHUB_OUTPUT
 
-echo "/lagoon -l lagoon $LAGOON_COMMAND"
+/lagoon -l lagoon $INPUT_LAGOON_COMMAND
