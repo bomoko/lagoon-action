@@ -16,6 +16,7 @@ chmod 600 ~/.ssh/id_rsa
 touch ~/.ssh/known_hosts
 chmod 644 ~/.ssh/known_hosts
 
+cp /root/.lagoon.yml ~/.lagoon.yml
 # envplate the .lagoon.yaml file
 ep ~/.lagoon.yml
 
