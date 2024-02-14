@@ -4,7 +4,7 @@
 mkdir -p ~/.ssh/
 
 # Copy SSH private key from environment variable
-echo -e $INPUT_SSH_PRIVATE_KEY > ~/.ssh/id_rsa
+echo -e "$INPUT_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
 
 # Set correct permissions
 chmod 600 ~/.ssh/id_rsa
@@ -21,5 +21,5 @@ cp /root/.lagoon.yml ~/.lagoon.yml
 ep ~/.lagoon.yml
 
 # ls -la ~/.ssh/
-# head -c 100 ~/.ssh/id_rsa
-/lagoon -l lagoon -i ~/.ssh/id_rsa $INPUT_LAGOON_COMMAND
+head -c 100 ~/.ssh/id_rsa
+# /lagoon -l lagoon -i ~/.ssh/id_rsa $INPUT_LAGOON_COMMAND
