@@ -19,4 +19,6 @@ chmod 644 ~/.ssh/known_hosts
 # envplate the .lagoon.yaml file
 ep ~/.lagoon.yml
 
-/lagoon -l lagoon $LAGOON_COMMAND
+env | sort >> $GITHUB_OUTPUT
+
+# /lagoon -l lagoon $LAGOON_COMMAND

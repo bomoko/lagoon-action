@@ -26,7 +26,6 @@ inputs:
     description: 'Lagoon CLI command to run'
     required: true
     default: 'whoami'
-  
 runs:
   using: 'docker'
   image: 'Dockerfile'
