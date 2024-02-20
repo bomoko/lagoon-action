@@ -24,6 +24,8 @@ ep ~/.lagoon.yml
 
 env | sort | grep GITHUB_
 
+cat $GITHUB_EVENT_PATH
+
 # /lagoon -l lagoon --force -i ~/.ssh/id_rsa $INPUT_LAGOON_COMMAND
 # python3 action.py
 
