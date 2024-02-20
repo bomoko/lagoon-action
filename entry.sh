@@ -17,7 +17,14 @@ touch ~/.ssh/known_hosts
 chmod 644 ~/.ssh/known_hosts
 
 cp /root/.lagoon.yml ~/.lagoon.yml
+
+
 # envplate the .lagoon.yaml file
 ep ~/.lagoon.yml
 
-/lagoon -l lagoon --force -i ~/.ssh/id_rsa $INPUT_LAGOON_COMMAND
+env | sort | grep GITHUB_
+
+# /lagoon -l lagoon --force -i ~/.ssh/id_rsa $INPUT_LAGOON_COMMAND
+# python3 action.py
+
+

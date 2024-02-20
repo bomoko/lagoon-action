@@ -1,14 +1,15 @@
 # Use the uselagoon/lagoon-cli as a base image
 FROM uselagoon/lagoon-cli as base
 
-# # Create SSH directory
-# RUN mkdir -p ~/.ssh/
+
+RUN apk update && apk upgrade && apk add python3 py3-pip
 
 # Grab envplate so we can sort out the configuration files
 RUN wget -q https://github.com/kreuzwerker/envplate/releases/download/v1.0.2/envplate_1.0.2_$(uname -s)_$(uname -m).tar.gz -O - | tar xz && mv envplate /usr/local/bin/ep && chmod +x /usr/local/bin/ep
 
 # Copy the entry script and set correct permissions
 COPY entry.sh /entry.sh
+COPY action.py /action.py
 RUN chmod +x /entry.sh
 
 # copy across the lagoon.yaml file

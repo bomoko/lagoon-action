@@ -6,6 +6,10 @@ branding:
   color: 'blue'
 
 inputs:
+  action:
+    description: 'One of the following actions: deploy (default), upsert_variable'
+    required: true
+    default: 'deploy'
   ssh_private_key:
     description: 'SSH private key for Lagoon authentication'
     required: true
@@ -21,9 +25,15 @@ inputs:
     description: 'Lagoon SSH port'
     required: false
     default: 32222
+  lagoon_project:
+    description: 'Lagoon project name'
+    required: false
+  lagoon_environment:
+    description: 'Lagoon environment name'
+    required: false
   lagoon_command:
     description: 'Lagoon CLI command to run'
-    required: true
+    required: false
     default: 'whoami'
 runs:
   using: 'docker'
