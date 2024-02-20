@@ -13,7 +13,10 @@ COPY action.py /action.py
 RUN chmod +x /entry.sh
 
 # copy across the lagoon.yaml file
-COPY lagoon.yml /root/.lagoon.yml
+COPY lagoon.yml /rootcp/.lagoon.yml
+
+# let's set up a symlink to the lagoon cli into the /usr/local/bin directory
+RUN ln -s /lagoon /usr/local/bin/lagoon
 
 # Set up environment variable for the SSH key
 ENV INPUT_SSH-PRIVATE-KEY ""

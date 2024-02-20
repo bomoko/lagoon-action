@@ -16,17 +16,13 @@ chmod 600 ~/.ssh/id_rsa
 touch ~/.ssh/known_hosts
 chmod 644 ~/.ssh/known_hosts
 
-cp /root/.lagoon.yml ~/.lagoon.yml
+cp /rootcp/.lagoon.yml ~/.lagoon.yml
 
 
 # envplate the .lagoon.yaml file
 ep ~/.lagoon.yml
 
-env | sort | grep GITHUB_
-
-cat $GITHUB_EVENT_PATH
-
-# /lagoon -l lagoon --force -i ~/.ssh/id_rsa $INPUT_LAGOON_COMMAND
-# python3 action.py
+# Run the action
+python3 action.py
 
 
