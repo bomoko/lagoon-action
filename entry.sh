@@ -23,6 +23,6 @@ cp /rootcp/.lagoon.yml ~/.lagoon.yml
 ep ~/.lagoon.yml
 
 # Run the action
-python3 action.py
+python3 /action.py
 
 
