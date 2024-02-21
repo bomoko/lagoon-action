@@ -39,6 +39,16 @@ inputs:
     description: 'Wait for deployment to finish'
     required: false
     default: false
+  variable_scope:
+    description: 'If action is upsert_variable, this is the variable scope (runtime,build)'
+    required: false
+    default: 'runtime'
+  variable_name:
+    description: 'If action is upsert_variable, this is the variable name'
+    required: false
+  variable_value:
+    description: 'If action is upsert_variable, this is the variable value'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
