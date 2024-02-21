@@ -35,6 +35,10 @@ inputs:
     description: 'Lagoon CLI command to run'
     required: false
     default: 'whoami'
+  lagoon_wait_for_deployment:
+    description: 'Wait for deployment to finish'
+    required: false
+    default: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
