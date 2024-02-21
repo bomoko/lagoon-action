@@ -22,7 +22,7 @@ def main_process():
         if mode == "deploy":
             json_data = process_github_event_file()
             # print(json_data["pull_request"]["head"]["ref"])
-            if json_data["pull_request"] != None:
+            if json_data.get("pull_request") is not None:
                 #then we're dealing with a PR
                 print("Deploying PR")
                 # now we pull the relevant details
