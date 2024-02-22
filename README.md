@@ -1,52 +1,142 @@
-# Lagoon CLI Action
+# Lagoon Action
 
-This GitHub Action allows you to run lagoon-cli commands with SSH authentication. It supports two main actions: `deploy` and `upsert_variable`.
+This action interacts with the Lagoon API to allow you to currently
+* Create and deploy environments based on Branch name or PR
+* Upsert project/environment variables
+
+## Requirements
+
+To use this GitHub Action, you'll need to set up the following:
+
+### GitHub Action Secret
+
+* You will want to contact your Lagoon API administrator to set up a user with the [developer role](https://docs.lagoon.sh/concepts-basics/building-blocks/roles/) on the project you're going to be interacting with using this action.
+* You should then add an SSH key to this user's account that will _only_ be used by this action.
+* Create a secret in your GitHub repository that contains the private SSH key for authenticating with Lagoon. To add a secret:
+
+   - Navigate to your GitHub repository.
+   - Go to the "Settings" tab.
+   - In the left sidebar, click on "Secrets and Variables"
+   - Click on "Actions".
+   - Click on "New repository secret."
+   - Name the secret, e.g., `LAGOON_SSH_PRIVATE_KEY`.
+   - Paste the contents of your private SSH key into the "Value" field.
+   - Click on "Add secret."
 
 ## Inputs
 
-### `action` (required)
+### General
 
-One of the following actions: `deploy` (default), `upsert_variable`.
+#### `action`
 
-### `ssh_private_key` (required)
+**Description:** One of the following actions: deploy (default), upsert_variable.
 
-SSH private key for Lagoon authentication.
+**Required:** Yes
 
-### `lagoon_graphql_endpoint` (optional)
+**Default:** 'deploy'
 
-Lagoon GraphQL endpoint. Default is `https://api.lagoon.amazeeio.cloud/graphql`.
+#### `ssh_private_key`
 
-### `lagoon_ssh_hostname` (optional)
+**Description:** SSH private key for Lagoon authentication.
 
-Lagoon SSH hostname. Default is `ssh.lagoon.amazeeio.cloud`.
+**Required:** Yes
 
-### `lagoon_port` (optional)
+#### `lagoon_graphql_endpoint`
 
-Lagoon SSH port. Default is `32222`.
+**Description:** Lagoon GraphQL endpoint.
 
-### `lagoon_project` (optional)
+**Required:** No
 
-Lagoon project name.
+**Default:** https://api.lagoon.amazeeio.cloud/graphql
 
-### `lagoon_environment` (optional)
+#### `lagoon_ssh_hostname`
 
-Lagoon environment name.
+**Description:** Lagoon SSH hostname.
 
-### `lagoon_wait_for_deployment` (optional)
+**Required:** No
 
-Whether to wait for deployment completion (`true` or `false`). Default is `true`.
+**Default:** ssh.lagoon.amazeeio.cloud
 
-### `variable_scope` (required for `upsert_variable` action)
+#### `lagoon_port`
 
-Variable scope for the `upsert_variable` action. Can be one of "global", "build", and "runtime".
+**Description:** Lagoon SSH port.
 
-### `variable_name` (required for `upsert_variable` action)
+**Required:** No
 
-Variable name for the `upsert_variable` action.
+**Default:** 32222
 
-### `variable_value` (required for `upsert_variable` action)
+#### `lagoon_project`
 
-Variable value for the `upsert_variable` action.
+**Description:** Lagoon project name.
+
+**Required:** No
+
+#### `lagoon_environment`
+
+**Description:** Lagoon environment name.
+
+**Required:** No
+
+#### `debug`
+
+**Description:** Enable debug output.
+
+**Required:** No
+
+**Default:** false
+
+
+
+### Action: deploy
+
+#### `lagoon_wait_for_deployment`
+
+**Description:** Wait for deployment to finish.
+
+**Action:** `deploy`
+
+**Required:** No
+
+**Default:** false
+
+#### `max_deployment_timeout`
+
+**Description:** Maximum time (minutes) to wait for deployment - defaults to 30 minutes.
+
+**Required:** No
+
+**Action:** `deploy`
+
+**Default:** 30
+
+### Action: upsert_variable
+
+#### `variable_scope`
+
+**Description:** If action is upsert_variable, this is the variable scope (runtime, build).
+
+**Required:** For `upsert_variable`
+
+**Action:** `upsert_variable`
+
+**Default:** 'runtime'
+
+#### `variable_name`
+
+**Description:** If action is upsert_variable, this is the variable name.
+
+**Required:** For `upsert_variable`
+
+**Action:** `upsert_variable`
+
+#### `variable_value`
+
+**Description:** If action is upsert_variable, this is the variable value.
+
+**Required:** For `upsert_variable`
+
+**Action:** `upsert_variable`
+
 
 ## Example Usage
 
@@ -67,7 +157,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Lagoon Deployment
-      uses: uselagoon/lagoon-cli-action@v1
+      uses: uselagoon/lagoon-action@v1
       with:
         action: 'deploy'
         ssh_private_key: ${{ secrets.LAGOON_SSH_PRIVATE_KEY }}
@@ -83,7 +173,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Lagoon Upsert Variable
-      uses: uselagoon/lagoon-cli-action@v1
+      uses: uselagoon/lagoon-action@v1
       with:
         action: 'upsert_variable'
         ssh_private_key: ${{ secrets.LAGOON_SSH_PRIVATE_KEY }}
