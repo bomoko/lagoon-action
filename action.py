@@ -107,7 +107,7 @@ def deploy_pull_request(project_name, pr_title, pr_number, baseBranchName, baseB
 
 
 def wait_for_deployment(project_name, environment_name, build_id):
-    timeout_minutes = os.environ.get("INPUT_MAX_DEPLOYMENT_TIMEOUT", 30)
+    timeout_minutes = int(os.environ.get("INPUT_MAX_DEPLOYMENT_TIMEOUT", "30"))
     interval_seconds = 60
     start_time = time.time()
     iterations = 0
