@@ -53,6 +53,10 @@ inputs:
     description: 'Maximum time (minutes) to wait for deployment - defaults to 30 minutes.'
     required: false
     default: 30
+  debug:
+    description: 'Enable debug output'
+    required: false
+    default: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
