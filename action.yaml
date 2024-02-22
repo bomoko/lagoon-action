@@ -1,6 +1,6 @@
-name: 'Lagoon CLI Action'
-description: 'Run lagoon-cli commands with SSH authentication.'
-author: 'amazee.io'
+name: 'Lagoon Action'
+description: 'Run Interact with a Lagoon API.'
+author: 'Lagoon Team'
 branding:
   icon: 'play'
   color: 'blue'
@@ -31,10 +31,6 @@ inputs:
   lagoon_environment:
     description: 'Lagoon environment name'
     required: false
-  lagoon_command:
-    description: 'Lagoon CLI command to run'
-    required: false
-    default: 'whoami'
   lagoon_wait_for_deployment:
     description: 'Wait for deployment to finish'
     required: false
