@@ -16,7 +16,6 @@ def driver():
     project_name = os.environ.get("INPUT_LAGOON_PROJECT", "test6-drupal-example-simple")
     environment_name = os.environ.get("INPUT_LAGOON_ENVIRONMENT", "test1copy")
     wait_till_deployed = os.environ.get("INPUT_WAIT_FOR_DEPLOYMENT", "true").lower().strip() == "true"
-    debugLog(f"Wait for deployment: {wait_till_deployed}")
 
     # Perform actions based on the value of the 'mode' variable
     try:
@@ -86,7 +85,7 @@ def deploy_environment(project_name, environment_name, wait_till_deployed=True):
 
     debugLog(f"Deployment initiated. Build ID: {build_id}")
 
-    if wait_till_deployed == "true":
+    if wait_till_deployed:
         debugLog(f"Waiting for deployment to complete.")
         wait_for_deployment(project_name, environment_name, build_id)
 
