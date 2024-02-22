@@ -22,7 +22,10 @@ cp /rootcp/.lagoon.yml ~/.lagoon.yml
 # envplate the .lagoon.yaml file
 ep ~/.lagoon.yml
 
+echo "Checking debug"
+echo $INPUT_DEBUG
+
 # Run the action
-python3 /action.py
+# python3 /action.py
 
 
