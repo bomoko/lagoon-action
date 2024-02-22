@@ -31,7 +31,7 @@ inputs:
   lagoon_environment:
     description: 'Lagoon environment name'
     required: false
-  lagoon_wait_for_deployment:
+  wait_for_deployment:
     description: 'Wait for deployment to finish'
     required: false
     default: false

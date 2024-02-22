@@ -89,7 +89,7 @@ To use this GitHub Action, you'll need to set up the following:
 
 ### Action: deploy
 
-#### `lagoon_wait_for_deployment`
+#### `wait_for_deployment`
 
 **Description:** Wait for deployment to finish.
 
@@ -163,7 +163,7 @@ jobs:
         ssh_private_key: ${{ secrets.LAGOON_SSH_PRIVATE_KEY }}
         lagoon_project: 'your-project-name'
         lagoon_environment: 'your-environment-name'
-        lagoon_wait_for_deployment: 'true'
+        wait_for_deployment: 'true'
 
   upsert-variable:
     runs-on: ubuntu-latest
