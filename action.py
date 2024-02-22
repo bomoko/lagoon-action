@@ -9,22 +9,20 @@ LAGOON_NAME = os.environ.get("INPUT_LAGOON_NAME", "lagoon")
 class LagoonCLIError(Exception):
     pass
 
-def main_process():
+def driver():
     # Read environment variables
     mode = os.environ.get("INPUT_ACTION", "default")
         # Get project and environment names from environment variables
     project_name = os.environ.get("INPUT_LAGOON_PROJECT", "test6-drupal-example-simple")
     environment_name = os.environ.get("INPUT_LAGOON_ENVIRONMENT", "test1copy")
-    wait_till_deployed = os.environ.get("INPUT_WAIT_FOR_DEPLOYMENT", "true")
+    wait_till_deployed = os.environ.get("INPUT_WAIT_FOR_DEPLOYMENT", "true").lower().strip() == "true"
 
     # Perform actions based on the value of the 'mode' variable
     try:
         if mode == "deploy":
+            # We grab the event data from the payload file Github injects
             json_data = process_github_event_file()
-            # print(json_data["pull_request"]["head"]["ref"])
             if json_data.get("pull_request") is not None:
-                #then we're dealing with a PR
-                print("Deploying PR")
                 # now we pull the relevant details
                 baseBranchName = json_data["pull_request"]["base"]["ref"]
                 baseBranchRef = json_data["pull_request"]["base"]["sha"]
@@ -33,13 +31,29 @@ def main_process():
                 prTitle = json_data["pull_request"]["title"]
                 prNumber = json_data["pull_request"]["number"]
                 # if any of the four above are empty, we should fail
+                if baseBranchName == "":
+                    print("Error: Base branch name is missing.")
+                if baseBranchRef == "":
+                    print("Error: Base branch ref is missing.")
+                if headBranchName == "":
+                    print("Error: Head branch name is missing.")
+                if headBranchRef == "":
+                    print("Error: Head branch ref is missing.")
+                if prTitle == "":
+                    print("Error: Pull request title is missing.")
+                if prNumber == "":
+                    print("Error: Pull request number is missing.")
+
+                # Exit with an error code if any required details are missing
                 if baseBranchName == "" or baseBranchRef == "" or headBranchName == "" or headBranchRef == "" or prTitle == "" or prNumber == "":
-                    print("Error: PR details not found")
                     exit(1)
+                
+                print(f"Deploying PR: {prTitle} (#{prNumber}) from {headBranchName} to {baseBranchName}")
+
                 deploy_pull_request(project_name, prTitle, prNumber, baseBranchName, baseBranchRef, headBranchName, headBranchRef, wait_till_deployed)
             else:
                 #we're dealing with a branch
-                print("Deploying branch")
+                print(f"Deploying branch: {project_name} (environment{environment_name})")
                 deploy_environment(project_name, environment_name, wait_till_deployed)
         elif mode == "upsert_variable":
             variable_scope = os.environ.get("INPUT_VARIABLE_SCOPE","runtime")
@@ -58,22 +72,20 @@ def deploy_environment(project_name, environment_name, wait_till_deployed=True):
     if not project_name or not environment_name:
         raise LagoonCLIError("Missing project or environment name.")
 
-    print(f"Beginning deployment of {project_name}:{environment_name}")
-
     # Lagoon CLI command to deploy the latest version with --output-json flag
     lagoon_command = (
         f"lagoon -l {LAGOON_NAME} --returnData --force --output-json -i ~/.ssh/id_rsa deploy branch "
         f"-p {project_name} -b {environment_name}"
     )
 
-    print(f"Running Lagoon CLI command: {lagoon_command}")  
+    debugLog(f"Running Lagoon CLI command: {lagoon_command}")
 
     # Call the Lagoon CLI command and capture the output
     build_id = run_lagoon_command(lagoon_command)
 
-    print(f"Deployment initiated. Build ID: {build_id}")
+    debugLog(f"Deployment initiated. Build ID: {build_id}")
 
-    if wait_till_deployed:
+    if wait_till_deployed == "true":
         wait_for_deployment(project_name, environment_name, build_id)
 
     return build_id
@@ -93,12 +105,12 @@ def deploy_pull_request(project_name, pr_title, pr_number, baseBranchName, baseB
         f"--title '{pr_title}' --number {pr_number}"
     )
 
-    print(f"Running Lagoon CLI command: {lagoon_command}")  
+    debugLog(f"Running Lagoon CLI command: {lagoon_command}")  
 
     # Call the Lagoon CLI command and capture the output
     build_id = run_lagoon_command(lagoon_command)
 
-    print(f"Deployment initiated. Build ID: {build_id}")
+    debugLog(f"Deployment initiated. Build ID: {build_id}")
 
     if wait_till_deployed:
         wait_for_deployment(project_name, f"pr-{pr_number}", build_id)
@@ -120,15 +132,17 @@ def wait_for_deployment(project_name, environment_name, build_id):
             f"lagoon get deployment --output-json -l {LAGOON_NAME} -p {project_name} -e {environment_name} -N {build_id}"
         )
 
+        debugLog(f"Running Lagoon CLI command: {status_command}")
+        
         # Call the Lagoon CLI command and capture the output
         output = run_lagoon_command(status_command)
-
+        
         # Process the JSON output and check the status
         if output:
             try:
                 status_data = json.loads(output)
                 deployment_status = status_data["data"][0]["status"]
-                print(f"Deployment Status: {deployment_status}")
+                debugLog(f"Waiting for deployment to complete. Iteration: {iterations}. Status: {deployment_status}")
             
                 # TODO: are there any other terminal states?
                 if deployment_status in ["complete"]:
@@ -137,13 +151,15 @@ def wait_for_deployment(project_name, environment_name, build_id):
                 if deployment_status in ["failed", "cancelled"]:
                     raise LagoonCLIError(f"Deployment status: {deployment_status}")
                     break
+                # Let's keep track of how many times we've done this
+                iterations += 1                
             except json.JSONDecodeError as e:
                 if failed_checks >= max_failed_checks:
                     raise LagoonCLIError(f"Error decoding JSON output: {e}")
                 else:
                     failed_checks += 1
-                    print(f"Error decoding JSON output: {e}")
-                    print(f"Failed checks: {failed_checks}")
+                    debugLog(f"Error decoding JSON output: {e}")
+                    debugLog(f"Failed checks incremented: {failed_checks}")
 
         # Check for timeout
         elapsed_time = time.time() - start_time
@@ -151,6 +167,7 @@ def wait_for_deployment(project_name, environment_name, build_id):
             raise LagoonCLIError("Timeout reached. Deployment status check aborted.")
 
         # Wait for the specified interval before checking the status again
+        debugLog(f"Waiting for {interval_seconds} seconds before checking status again.")
         time.sleep(interval_seconds)
 
 
@@ -196,19 +213,23 @@ def upsert_variable(project_name, environment_name, variable_scope, variable_nam
         f"-p {project_name} -e {environment_name} -N '{variable_name}' -V '{variable_value}' -S {variable_scope}"
     )
 
-    print(f"Running Lagoon CLI command: {lagoon_command}")  
+    debugLog(f"Running Lagoon CLI command: {lagoon_command}")  
 
     # Call the Lagoon CLI command and capture the output
     output = run_lagoon_command(lagoon_command)
 
-    print(f"Variable upsert output: {output}")
+    debugLog(f"Variable upsert output: {output}")
     return output
 
+
+def debugLog(message):
+    input_debug = os.environ.get("INPUT_DEBUG", "false")
+    if input_debug.lower().strip() == "true":
+        print(f"::debug::{message}")
 
 def default_process():
     print("Set an 'action' value of 'deploy' or 'upsert_variable' to use this action.")
     exit(1)
-    # Add your code for the default mode here
 
 def run_lagoon_command(command):
     try:
@@ -221,4 +242,4 @@ def run_lagoon_command(command):
         raise LagoonCLIError(f"Error executing Lagoon CLI command: {e}")
 
 if __name__ == "__main__":
-    main_process()
+    driver()
