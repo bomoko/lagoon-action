@@ -107,9 +107,12 @@ def deploy_pull_request(project_name, pr_title, pr_number, baseBranchName, baseB
 
 
 def wait_for_deployment(project_name, environment_name, build_id):
-    timeout_minutes = 30
+    timeout_minutes = os.environ.get("INPUT_MAX_DEPLOYMENT_TIMEOUT", 30)
     interval_seconds = 60
     start_time = time.time()
+    iterations = 0
+    failed_checks = 0
+    max_failed_checks = 5
 
     while True:
         # Lagoon CLI command to get deployment status
@@ -134,9 +137,13 @@ def wait_for_deployment(project_name, environment_name, build_id):
                 if deployment_status in ["failed", "cancelled"]:
                     raise LagoonCLIError(f"Deployment status: {deployment_status}")
                     break
-            # TODO: Should we retry here
             except json.JSONDecodeError as e:
-                raise LagoonCLIError(f"Error decoding JSON output: {e}")
+                if failed_checks >= max_failed_checks:
+                    raise LagoonCLIError(f"Error decoding JSON output: {e}")
+                else:
+                    failed_checks += 1
+                    print(f"Error decoding JSON output: {e}")
+                    print(f"Failed checks: {failed_checks}")
 
         # Check for timeout
         elapsed_time = time.time() - start_time

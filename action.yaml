@@ -49,6 +49,10 @@ inputs:
   variable_value:
     description: 'If action is upsert_variable, this is the variable value'
     required: false
+  max_deployment_timeout:
+    description: 'Maximum time (minutes) to wait for deployment - defaults to 30 minutes.'
+    required: false
+    default: 30
 runs:
   using: 'docker'
   image: 'Dockerfile'
