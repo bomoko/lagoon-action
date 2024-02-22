@@ -224,10 +224,8 @@ def upsert_variable(project_name, environment_name, variable_scope, variable_nam
 
 def debugLog(message):
     input_debug = os.environ.get("INPUT_DEBUG", "false")
-    print(f"::debug::DEBUG: {input_debug}")
-    print(type(input_debug))
     if input_debug.lower().strip() == "true":
-        print(f"::debug::{message}")
+        print(f"debug: {message}")
 
 def default_process():
     print("Set an 'action' value of 'deploy' or 'upsert_variable' to use this action.")
